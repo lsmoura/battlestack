@@ -22,6 +22,8 @@ magnet_height = 3.2;
 magnet_depth = 60.2;
 magnet_spacing = 27;
 
+magnet_insert_holes = false;
+
 $fn = 60;
 
 m3_insert_border_distance = border_radius / 2;
@@ -40,22 +42,22 @@ difference() {
                     h = backplate_height,
                     r = border_radius,
                     center = true
-                );    
+                );
             }
         }
-        
+
         // middle body
         cube(
             [
                 backplate_width - border_radius*2,
                 backplate_depth - border_radius*2,
                 backplate_height
-            ], 
+            ],
             center = true
         );
-        
+
         // edges
-        for (y = [-1:2:1]) {            
+        for (y = [-1:2:1]) {
             translate([
                 y * (backplate_width - border_radius)/2,
                 0,
@@ -66,17 +68,17 @@ difference() {
                     border_radius,
                     backplate_depth - border_radius*2,
                     backplate_height
-                ], 
+                ],
                 center = true
             );
-            
+
             translate([0, y * (backplate_depth - border_radius)/2, 0])
             cube(
                 [
                     backplate_width - border_radius*2,
                     border_radius,
                     backplate_height
-                ], 
+                ],
                 center = true
             );
         }
@@ -92,7 +94,7 @@ difference() {
             union() {
                 translate([
                     0,
-                    0, 
+                    0,
                     (m3_insert_height + m3_insert_cone_height)/2
                 ])
                 cylinder(
@@ -111,11 +113,18 @@ difference() {
     }
     // magnet spaces
     for (x = [-4:1:3]) {
-        #translate([
-            magnet_spacing/2 + x * magnet_spacing, 
-            0, 
+        translate([
+            magnet_spacing/2 + x * magnet_spacing,
+            0,
             backplate_height/2-magnet_height/2-0.2*3
         ])
-        cube([magnet_width, magnet_depth, magnet_height], center = true);
+        {
+            cube([magnet_width, magnet_depth, magnet_height], center = true);
+            if (magnet_insert_holes == true) {
+                translate([0, -backplate_depth/2, 0])
+                cube([magnet_width, 10, magnet_height], center = true);
+            }
+        }
     }
 }
+
